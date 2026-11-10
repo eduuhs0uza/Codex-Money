@@ -25,6 +25,12 @@ jobs:
           persist-credentials: false
       - name: Buscar anúncios públicos
         run: python3 automacao/buscar.py --saida relatorios
+      - name: Mostrar relatório no resumo da execução
+        if: always()
+        run: |
+          if [ -f relatorios/oportunidades.md ]; then
+            cat relatorios/oportunidades.md >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Salvar relatório como artefato
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
