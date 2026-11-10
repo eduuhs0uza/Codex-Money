@@ -1,0 +1,35 @@
+name: Pesquisa gratuita de oportunidades
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 12 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'automacao/**'
+      - '.github/workflows/oportunidades.yml'
+permissions:
+  contents: read
+concurrency:
+  group: pesquisa-publica
+  cancel-in-progress: false
+jobs:
+  consultar:
+    # Apenas repositório público, runner padrão e sem ferramentas/API pagas.
+    if: github.event.repository.visibility == 'public'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Buscar anúncios públicos
+        run: python3 automacao/buscar.py --saida relatorios
+      - name: Salvar relatório como artefato
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: oportunidades
+          path: relatorios/
+          retention-days: 7
+          if-no-files-found: error

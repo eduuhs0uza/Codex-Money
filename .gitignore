@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.env.*
+!.env.example
+fontes/
+dados-clientes/
+
+relatorios/
+
+.sessions/
+
+.private/
